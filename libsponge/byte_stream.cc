@@ -16,67 +16,36 @@ ByteStream::ByteStream(const size_t _capacity)
     : capacity(_capacity), remaining_size(capacity), buffer(), had_read(0), had_written(0), is_end_input(false) {}
 
 size_t ByteStream::write(const string &data) {
-    size_t len = min(data.length(), this->remaining_size);
-    this->buffer.append(Buffer(string(data, 0, len)));
-    this->had_written += len;
-    this->remaining_size -= len;
-    return len;
-    // if (len < this->remaining_size) {
-    //     this->had_written += len;
-    //     this->buffer += data;
-    //     this->remaining_size -= len;
-    //     return len;
-    // } else {
-    //     size_t tmp = this->remaining_size;
-    //     this->had_written += this->remaining_size;
-    //     this->buffer += string(data, 0, this->remaining_size);
-    //     this->remaining_size = 0;
-    //     return tmp;
-    // }
+    size_t len = data.length();
+
+    if (len < this->remaining_size) {
+        this->had_written += len;
+        this->buffer += data;
+        this->remaining_size -= len;
+        return len;
+    } else {
+        size_t tmp = this->remaining_size;
+        this->had_written += this->remaining_size;
+        this->buffer += string(data, 0, this->remaining_size);
+        this->remaining_size = 0;
+        return tmp;
+    }
 }
 
 //! \param[in] len bytes will be copied from the output side of the buffer
-string ByteStream::peek_output(const size_t len) const { 
-    const std::deque<Buffer> & _buffer = this->buffer.buffers();
-    size_t n = len, limit = _buffer.size();
-    string tmp;
-    for(size_t i = 0; i < limit; ++i)
-    {
-        if(n > 0)
-        {
-
-            if(n < _buffer[i].str().size())
-            {
-                tmp += _buffer[i].copy().substr(0, n);
-                n = 0;
-            }
-            else
-            {
-                tmp += _buffer[i].copy();
-                n -= _buffer[i].str().size();
-            }
-        }
-        else
-            break;
-    }
-    return tmp;
-}
+string ByteStream::peek_output(const size_t len) const { return string(this->buffer, 0, len); }
 
 //! \param[in] len bytes will be removed from the output side of the buffer
 void ByteStream::pop_output(const size_t len) {
-    // if (len < this->buffer.length()) {
-    //     this->had_read += len;
-    //     this->remaining_size += len;
-    //     this->buffer.erase(0, len);
-    // } else {
-    //     this->had_read += this->buffer.length();
-    //     this->remaining_size += this->buffer.length();
-    //     this->buffer.erase();
-    // }
-    size_t tmp = min(len, this->buffer.size());
-    this->had_read += tmp;
-    this->remaining_size += tmp;
-    this->buffer.remove_prefix(tmp);
+    if (len < this->buffer.length()) {
+        this->had_read += len;
+        this->remaining_size += len;
+        this->buffer.erase(0, len);
+    } else {
+        this->had_read += this->buffer.length();
+        this->remaining_size += this->buffer.length();
+        this->buffer.erase();
+    }
 }
 
 //! Read (i.e., copy and then pop) the next "len" bytes of the stream
@@ -92,9 +61,9 @@ void ByteStream::end_input() { this->is_end_input = true; }
 
 bool ByteStream::input_ended() const { return this->is_end_input; }
 
-size_t ByteStream::buffer_size() const { return this->buffer.size(); }
+size_t ByteStream::buffer_size() const { return this->buffer.length(); }
 
-bool ByteStream::buffer_empty() const { return this->buffer.size() == 0; }
+bool ByteStream::buffer_empty() const { return this->buffer.empty(); }
 
 bool ByteStream::eof() const { return (this->is_end_input == true && this->buffer_empty()); }
 
