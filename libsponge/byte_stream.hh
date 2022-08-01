@@ -2,7 +2,7 @@
 #define SPONGE_LIBSPONGE_BYTE_STREAM_HH
 
 #include <string>
-
+#include "buffer.hh"
 //! \brief An in-order byte stream.
 
 //! Bytes are written on the "input" side and read from the "output"
@@ -11,7 +11,12 @@
 class ByteStream {
   private:
     // Your code here -- add private members as necessary.
-
+    size_t capacity;
+    size_t remaining_size;
+    BufferList buffer;
+    size_t had_read;
+    size_t had_written;
+    bool is_end_input;
     // Hint: This doesn't need to be a sophisticated data structure at
     // all, but if any of your tests are taking longer than a second,
     // that's a sign that you probably want to keep exploring
@@ -21,7 +26,7 @@ class ByteStream {
 
   public:
     //! Construct a stream with room for `capacity` bytes.
-    ByteStream(const size_t capacity);
+    ByteStream(const size_t _capacity);
 
     //! \name "Input" interface for the writer
     //!@{

@@ -9,6 +9,22 @@
 #include <functional>
 #include <queue>
 
+
+class TCPSenderTimer{
+  public:
+    uint64_t begintime;
+    uint64_t rto;
+    uint32_t retransmit_times;
+    uint64_t initial_rto;
+    bool     running;
+
+    TCPSenderTimer(uint64_t initrto) :begintime(0), rto(initrto), retransmit_times(0), initial_rto(initrto), running(false){}
+    void start_timer(uint64_t nowtick);
+    void end_timer();
+    void restart_timer(uint64_t nowtick);
+    bool check_timer(uint64_t nowtick);
+    void update_rto();
+};
 //! \brief The "sender" part of a TCP implementation.
 
 //! Accepts a ByteStream, divides it up into segments and sends the
@@ -31,6 +47,20 @@ class TCPSender {
 
     //! the (absolute) sequence number for the next byte to be sent
     uint64_t _next_seqno{0};
+
+    TCPSenderTimer _timer;
+
+    uint64_t _ticks;
+
+    std::queue<TCPSegment> _wait_for_ack{};
+
+    uint64_t _bytes_in_flight;
+
+    size_t _winsize;
+
+    bool _is_send_syn;
+
+    bool _is_send_fin;
 
   public:
     //! Initialize a TCPSender
@@ -82,11 +112,20 @@ class TCPSender {
     //!@{
 
     //! \brief absolute seqno for the next byte to be sent
-    uint64_t next_seqno_absolute() const { return _next_seqno; }
+    uint64_t next_seqno_absolute() const { 
+      return _next_seqno; }
 
     //! \brief relative seqno for the next byte to be sent
     WrappingInt32 next_seqno() const { return wrap(_next_seqno, _isn); }
     //!@}
+
+    size_t gettick() const {return this->_ticks;}
+
+    bool is_sent_fin() const {return this->_is_send_fin;}
+
+    bool is_sent_syn() const {return this->_is_send_syn;}
+
 };
+
 
 #endif  // SPONGE_LIBSPONGE_TCP_SENDER_HH
