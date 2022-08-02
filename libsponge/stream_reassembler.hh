@@ -4,9 +4,8 @@
 #include "byte_stream.hh"
 
 #include <cstdint>
-#include <string>
 #include <deque>
-
+#include <string>
 
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
 //! possibly overlapping) into an in-order byte stream.
@@ -21,7 +20,6 @@ class StreamReassembler {
     uint64_t _next_expected_index;
     bool _get_last_string;
     size_t _unressembler_size;
-    
 
   public:
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
@@ -55,9 +53,9 @@ class StreamReassembler {
     //! \returns `true` if no substrings are waiting to be assembled
     bool empty() const;
 
-    bool finsih() const{return this->empty() && this->_get_last_string;}
+    bool finsih() const { return this->empty() && this->_get_last_string; }
 
-    uint64_t next_expected_index() const{return this->_next_expected_index;}
+    uint64_t next_expected_index() const { return this->_next_expected_index; }
 };
 
 #endif  // SPONGE_LIBSPONGE_STREAM_REASSEMBLER_HH

@@ -9,16 +9,16 @@
 #include <functional>
 #include <queue>
 
-
-class TCPSenderTimer{
+class TCPSenderTimer {
   public:
     uint64_t begintime;
     uint64_t rto;
     uint32_t retransmit_times;
     uint64_t initial_rto;
-    bool     running;
+    bool running;
 
-    TCPSenderTimer(uint64_t initrto) :begintime(0), rto(initrto), retransmit_times(0), initial_rto(initrto), running(false){}
+    TCPSenderTimer(uint64_t initrto)
+        : begintime(0), rto(initrto), retransmit_times(0), initial_rto(initrto), running(false) {}
     void start_timer(uint64_t nowtick);
     void end_timer();
     void restart_timer(uint64_t nowtick);
@@ -112,20 +112,17 @@ class TCPSender {
     //!@{
 
     //! \brief absolute seqno for the next byte to be sent
-    uint64_t next_seqno_absolute() const { 
-      return _next_seqno; }
+    uint64_t next_seqno_absolute() const { return _next_seqno; }
 
     //! \brief relative seqno for the next byte to be sent
     WrappingInt32 next_seqno() const { return wrap(_next_seqno, _isn); }
     //!@}
 
-    size_t gettick() const {return this->_ticks;}
+    size_t gettick() const { return this->_ticks; }
 
-    bool is_sent_fin() const {return this->_is_send_fin;}
+    bool is_sent_fin() const { return this->_is_send_fin; }
 
-    bool is_sent_syn() const {return this->_is_send_syn;}
-
+    bool is_sent_syn() const { return this->_is_send_syn; }
 };
-
 
 #endif  // SPONGE_LIBSPONGE_TCP_SENDER_HH

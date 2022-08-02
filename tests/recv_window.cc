@@ -167,7 +167,7 @@ int main() {
             test.execute(SegmentArrives{}.with_seqno(isn + 1).with_data("ab").with_result(SegmentArrives::Result::OK));
             test.execute(SegmentArrives{}.with_seqno(isn + 3).with_data("cd").with_result(SegmentArrives::Result::OK));
         }
-        cerr<<"flag\n";
+        cerr << "flag\n";
         // credit for test: Jared Wasserman
         {
             // A byte with invalid stream index should be ignored

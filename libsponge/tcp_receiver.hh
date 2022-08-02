@@ -23,6 +23,7 @@ class TCPReceiver {
     bool _rece_syn;
 
     WrappingInt32 _isn;
+
   public:
     //! \brief Construct a TCP receiver
     //!

@@ -12,7 +12,7 @@
 // automated checks run by `make check_lab3`.
 
 template <typename... Targs>
-void DUMMY_CODE(Targs &&.../* unused */) {}
+void DUMMY_CODE(Targs &&... /* unused */) {}
 
 using namespace std;
 
@@ -67,7 +67,7 @@ void TCPSender::fill_window() {
             this->_timer.start_timer(this->_ticks);
         }
     } else {
-        if(this->_wait_for_ack.empty() == false)
+        if (this->_wait_for_ack.empty() == false)
             return;
         TCPSegment seg;
         seg.header().seqno = this->next_seqno();
