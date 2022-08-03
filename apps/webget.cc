@@ -24,7 +24,7 @@ void get_URL(const string &host, const string &path) {
                      "\r\n"
                      "Connection: close\r\n\r\n";
     // cerr << request;
-    CS144TCPSocket sock;
+    FullStackSocket sock;
     sock.connect(Address(host, "http"));
     sock.write(request);
     while (sock.eof() == false) {
